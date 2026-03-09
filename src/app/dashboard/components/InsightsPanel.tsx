@@ -4,7 +4,7 @@ import { Lightbulb } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface InsightsPanelProps {
-  insights: string[];
+  insights: { title: string; description: string; color: string }[];
 }
 
 export default function InsightsPanel({ insights }: InsightsPanelProps) {
@@ -16,19 +16,17 @@ export default function InsightsPanel({ insights }: InsightsPanelProps) {
       </CardHeader>
       <CardContent>
         {insights.length > 0 ? (
-          <ul className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {insights.map((insight, index) => (
-              <li
+              <div
                 key={index}
-                className="flex items-start gap-3 text-sm text-muted-foreground"
+                className={`p-4 border border-border rounded-lg bg-card hover:shadow-md transition-shadow ${insight.color}`}
               >
-                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-medium flex-shrink-0">
-                  {index + 1}
-                </span>
-                <span>{insight}</span>
-              </li>
+                <h3 className="text-lg font-medium text-foreground mb-2">{insight.title}</h3>
+                <p className="text-sm text-muted-foreground">{insight.description}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
           <p className="text-sm text-muted-foreground">
             Log your first entry to receive personalized insights.

@@ -24,10 +24,9 @@ export default function JournalPage() {
   const fetchEntries = async () => {
     setIsLoading(true);
     try {
-      const startDate = new Date(selectedDate);
-      startDate.setDate(startDate.getDate() - 30); // Get last 30 days
-      const endDate = new Date(selectedDate);
-      endDate.setDate(endDate.getDate() + 1);
+      // Query the full calendar month for selectedDate
+      const startDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+      const endDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
 
       const startStr = startDate.toISOString().split("T")[0];
       const endStr = endDate.toISOString().split("T")[0];
@@ -83,15 +82,11 @@ export default function JournalPage() {
   };
 
   const goToPreviousMonth = () => {
-    const newDate = new Date(selectedDate);
-    newDate.setMonth(newDate.getMonth() - 1);
-    setSelectedDate(newDate);
+    setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
   };
 
   const goToNextMonth = () => {
-    const newDate = new Date(selectedDate);
-    newDate.setMonth(newDate.getMonth() + 1);
-    setSelectedDate(newDate);
+    setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   };
 
   const monthYear = selectedDate.toLocaleDateString("en-US", {
