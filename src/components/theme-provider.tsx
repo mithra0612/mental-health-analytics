@@ -21,51 +21,35 @@ const ThemeProviderContext = React.createContext<ThemeProviderState | undefined>
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "light",
   storageKey = "mental-health-theme",
 }: ThemeProviderProps) {
-  const [theme, setTheme] = React.useState<Theme>(defaultTheme);
+  // Force light theme - no switching allowed
+  const [theme] = React.useState<Theme>("light");
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    const stored = localStorage.getItem(storageKey) as Theme | null;
-    if (stored) {
-      setTheme(stored);
-    }
+    // Always set light theme on mount
     setMounted(true);
-  }, [storageKey]);
+  }, []);
 
   React.useEffect(() => {
     if (!mounted) return;
 
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
-
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-      root.classList.add(systemTheme);
-    } else {
-      root.classList.add(theme);
-    }
-  }, [theme, mounted]);
+    root.classList.add("light");
+  }, [mounted]);
 
   const value = React.useMemo(
     () => ({
-      theme,
-      setTheme: (newTheme: Theme) => {
-        localStorage.setItem(storageKey, newTheme);
-        setTheme(newTheme);
+      theme: "light" as Theme,
+      setTheme: () => {
+        // No-op: theme switching is disabled
       },
     }),
-    [theme, storageKey]
+    []
   );
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
 
   return (
     <ThemeProviderContext.Provider value={value}>

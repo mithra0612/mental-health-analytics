@@ -17,9 +17,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="light">
       <body className={inter.className}>
-        <ThemeProvider defaultTheme="system" storageKey="mental-health-theme">
+        <ThemeProvider defaultTheme="light" storageKey="mental-health-theme">
           {children}
           <Toaster />
         </ThemeProvider>

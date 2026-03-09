@@ -21,8 +21,37 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+
+  const handleSeed = async () => {
+    setIsSeeding(true);
+    try {
+      const response = await fetch("/api/seed", { method: "GET" });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Seeding failed");
+      }
+
+      setEmail(data.credentials.email);
+      setPassword(data.credentials.password);
+
+      toast({
+        title: "Test user created",
+        description: `Email: ${data.credentials.email}, Password: ${data.credentials.password}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Seeding failed",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,6 +147,22 @@ export default function LoginPage() {
                 </>
               ) : (
                 "Sign in"
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleSeed}
+              disabled={isSeeding}
+            >
+              {isSeeding ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating test user...
+                </>
+              ) : (
+                "Create test account"
               )}
             </Button>
             <p className="text-sm text-muted-foreground text-center">
