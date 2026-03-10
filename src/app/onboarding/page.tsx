@@ -11,6 +11,13 @@ import {
   Activity,
   Sparkles,
   Loader2,
+  Smile,
+  Wind,
+  Dumbbell,
+  Waves,
+  Heart,
+  Sprout,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -31,15 +38,15 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 
-const PURPOSES = [
-  { id: "track-mood", label: "Track mood", icon: "😊" },
-  { id: "improve-sleep", label: "Improve sleep", icon: "😴" },
-  { id: "manage-stress", label: "Manage stress", icon: "🧘" },
-  { id: "build-habits", label: "Build healthy habits", icon: "💪" },
-  { id: "monitor-anxiety", label: "Monitor anxiety", icon: "🌊" },
-  { id: "increase-mindfulness", label: "Increase mindfulness", icon: "🧠" },
-  { id: "track-emotions", label: "Track emotions", icon: "❤️" },
-  { id: "personal-growth", label: "Personal growth", icon: "🌱" },
+const PURPOSES: { id: string; label: string; icon: LucideIcon }[] = [
+  { id: "track-mood", label: "Track mood", icon: Smile },
+  { id: "improve-sleep", label: "Improve sleep", icon: Moon },
+  { id: "manage-stress", label: "Manage stress", icon: Wind },
+  { id: "build-habits", label: "Build healthy habits", icon: Dumbbell },
+  { id: "monitor-anxiety", label: "Monitor anxiety", icon: Waves },
+  { id: "increase-mindfulness", label: "Increase mindfulness", icon: Brain },
+  { id: "track-emotions", label: "Track emotions", icon: Heart },
+  { id: "personal-growth", label: "Personal growth", icon: Sprout },
 ];
 
 const GOALS = [
@@ -176,7 +183,7 @@ export default function OnboardingPage() {
                       : "border-border hover:border-primary/50"
                   }`}
                 >
-                  <span className="text-2xl block mb-1">{purpose.icon}</span>
+                  <purpose.icon className="w-6 h-6 mb-1 text-primary" />
                   <span className="text-sm font-medium">{purpose.label}</span>
                 </button>
               ))}
