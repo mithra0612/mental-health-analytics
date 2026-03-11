@@ -38,7 +38,17 @@ export function verifyToken(token: string): AuthUser | null {
   }
 }
 
-export async function getSession(): Promise<AuthUser | null> {
+export async function getSession(req?: { headers: { get(name: string): string | null } }): Promise<AuthUser | null> {
+  // 1. Check Authorization: Bearer <token> header (API clients)
+  if (req) {
+    const authHeader = req.headers.get("authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice(7);
+      return verifyToken(token);
+    }
+  }
+
+  // 2. Fall back to HTTP-only session cookie (browser)
   const cookieStore = await cookies();
   const token = cookieStore.get("auth-token")?.value;
 

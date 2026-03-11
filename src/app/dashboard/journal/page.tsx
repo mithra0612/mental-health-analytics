@@ -6,6 +6,7 @@ import { DashboardHeader } from "@/components/layout/DashboardHeader";
 import { EntryForm } from "@/components/dashboard/journal/EntryForm";
 import { JournalList } from "@/components/dashboard/journal/JournalList";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { IEntry } from "@/types";
@@ -13,26 +14,23 @@ import type { IEntry } from "@/types";
 export default function JournalPage() {
   const [entries, setEntries] = useState<IEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
     fetchEntries();
-  }, [selectedDate]);
+  }, [currentPage, searchQuery]);
 
   const fetchEntries = async () => {
     setIsLoading(true);
     try {
-      // Query the full calendar month for selectedDate
-      const startDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-      const endDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
-
-      const startStr = startDate.toISOString().split("T")[0];
-      const endStr = endDate.toISOString().split("T")[0];
-
       const res = await fetch(
-        `/api/entries?startDate=${startStr}&endDate=${endStr}`
+        `/api/entries?page=${currentPage}&limit=10&search=${encodeURIComponent(
+          searchQuery
+        )}`
       );
 
       if (res.status === 401) {
@@ -44,6 +42,7 @@ export default function JournalPage() {
 
       const data = await res.json();
       setEntries(data.entries || []);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error("Failed to load entries:", error);
       toast({
@@ -81,18 +80,17 @@ export default function JournalPage() {
     }
   };
 
-  const goToPreviousMonth = () => {
-    setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
   };
 
-  const goToNextMonth = () => {
-    setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
   };
-
-  const monthYear = selectedDate.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
 
   return (
     <div>
@@ -104,31 +102,19 @@ export default function JournalPage() {
         {/* Entry Form */}
         <EntryForm onSuccess={() => fetchEntries()} isLoading={isLoading} />
 
+        {/* Search Filter */}
+        <div className="mb-4">
+          <Input
+            placeholder="Search entries..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
         {/* Past Entries Section */}
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Past Entries</h2>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={goToPreviousMonth}
-                aria-label="Previous month"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <span className="text-sm font-medium px-2 min-w-[150px] text-center">
-                {monthYear}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={goToNextMonth}
-                aria-label="Next month"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
 
           <JournalList
@@ -136,6 +122,29 @@ export default function JournalPage() {
             isLoading={isLoading}
             onDelete={handleDeleteEntry}
           />
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" /> Previous
+            </Button>
+            <span className="text-sm font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
