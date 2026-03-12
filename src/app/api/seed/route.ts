@@ -110,7 +110,7 @@ async function seedDatabase() {
   const entries = [];
   const totalDays = 90;
 
-  for (let i = totalDays; i >= 0; i--) {
+  for (let i = totalDays; i >= 1; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
     date.setHours(20, 0, 0, 0); // evening entry
