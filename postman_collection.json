@@ -1,0 +1,761 @@
+{
+  "info": {
+    "name": "Mental Health Analytics API",
+    "description": "Complete API collection for the Mental Health Analytics app.\n\n## Setup\n1. Import this file into Postman.\n2. Select the **Mental Health Analytics** environment (also import `postman_environment.json`).\n3. Run **Auth / Signup** or **Auth / Login** — the `token` variable is saved automatically via the test script.\n4. All protected requests use `Bearer {{token}}` automatically.\n\n## Base URL\n`{{baseUrl}}` defaults to `http://localhost:3000/api`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints — signup, login, logout, and current user.",
+      "item": [
+        {
+          "name": "Signup",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) {",
+                  "  pm.collectionVariables.set('token', res.token);",
+                  "  pm.environment.set('token', res.token);",
+                  "  console.log('Token saved:', res.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"securepassword123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "signup"]
+            },
+            "description": "Register a new user account. Sets `token` collection variable on success."
+          },
+          "response": [
+            {
+              "name": "200 OK — Success",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"user\": {\n    \"id\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n    \"email\": \"jane@example.com\",\n    \"name\": \"Jane Doe\",\n    \"onboardingCompleted\": false\n  }\n}"
+            },
+            {
+              "name": "400 — Missing fields",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Email, password, and name are required\"\n}"
+            },
+            {
+              "name": "400 — Email already exists",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"User with this email already exists\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) {",
+                  "  pm.collectionVariables.set('token', res.token);",
+                  "  pm.environment.set('token', res.token);",
+                  "  console.log('Token saved:', res.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"securepassword123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticate an existing user. Sets `token` collection variable on success."
+          },
+          "response": [
+            {
+              "name": "200 OK — Success",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"user\": {\n    \"id\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n    \"email\": \"jane@example.com\",\n    \"name\": \"Jane Doe\",\n    \"onboardingCompleted\": true\n  }\n}"
+            },
+            {
+              "name": "401 — Invalid credentials",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Invalid email or password\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('token', '');",
+                  "pm.environment.set('token', '');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Invalidate the current session cookie. Clears the `token` variable on success."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Return the profile of the currently authenticated user, including preferences."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"user\": {\n    \"id\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n    \"email\": \"jane@example.com\",\n    \"name\": \"Jane Doe\",\n    \"onboardingCompleted\": true,\n    \"preferences\": {\n      \"purposes\": [\"stress\", \"sleep\"],\n      \"stressBaseline\": 5,\n      \"sleepHours\": 8,\n      \"goals\": [\"Better sleep\"],\n      \"notifications\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "401 — Not authenticated",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Not authenticated\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Onboarding",
+      "description": "Save user preferences after signup and mark onboarding complete.",
+      "item": [
+        {
+          "name": "Complete Onboarding",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"purposes\": [\"stress\", \"mood\"],\n  \"stressBaseline\": 6,\n  \"sleepHours\": 7.5,\n  \"goals\": [\"Reduce anxiety\", \"Sleep better\"]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/onboarding",
+              "host": ["{{baseUrl}}"],
+              "path": ["onboarding"]
+            },
+            "description": "Save preferences collected during the onboarding flow. Marks `onboardingCompleted: true` on the user."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true\n}"
+            },
+            {
+              "name": "401 — Not authenticated",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Unauthorized\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Journal Entries",
+      "description": "Create and retrieve daily wellness journal entries (mood, stress, sleep).",
+      "item": [
+        {
+          "name": "List Entries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/entries?limit=30&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["entries"],
+              "query": [
+                { "key": "limit", "value": "30", "description": "Max entries to return (default: 30)" },
+                { "key": "offset", "value": "0", "description": "Pagination offset (default: 0)" },
+                { "key": "date", "value": "", "description": "Single day filter (YYYY-MM-DD)", "disabled": true },
+                { "key": "startDate", "value": "2026-03-01", "description": "Range start (YYYY-MM-DD)", "disabled": true },
+                { "key": "endDate", "value": "2026-03-10", "description": "Range end (YYYY-MM-DD)", "disabled": true }
+              ]
+            },
+            "description": "Retrieve paginated journal entries. Optionally filter by a single `date` or a `startDate`/`endDate` range."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"entries\": [\n    {\n      \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d2\",\n      \"userId\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n      \"date\": \"2026-03-10T12:00:00.000Z\",\n      \"mood\": 4,\n      \"stress\": 3,\n      \"sleep\": 7.5,\n      \"emotions\": [\"calm\", \"focused\"],\n      \"notes\": \"Productive day overall.\",\n      \"triggers\": [\"work deadline\"],\n      \"createdAt\": \"2026-03-10T14:00:00.000Z\",\n      \"updatedAt\": \"2026-03-10T14:00:00.000Z\"\n    }\n  ],\n  \"total\": 25,\n  \"hasMore\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Entries — Filtered by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/entries?startDate=2026-03-01&endDate=2026-03-10",
+              "host": ["{{baseUrl}}"],
+              "path": ["entries"],
+              "query": [
+                { "key": "startDate", "value": "2026-03-01" },
+                { "key": "endDate", "value": "2026-03-10" }
+              ]
+            },
+            "description": "Filter entries between two dates."
+          },
+          "response": []
+        },
+        {
+          "name": "Create / Update Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mood\": 4,\n  \"stress\": 3,\n  \"sleep\": 7.5,\n  \"emotions\": [\"calm\", \"focused\"],\n  \"notes\": \"Had a productive morning.\",\n  \"triggers\": [\"work deadline\"],\n  \"date\": \"2026-03-10\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/entries",
+              "host": ["{{baseUrl}}"],
+              "path": ["entries"]
+            },
+            "description": "Create a new entry for the given date. If an entry already exists for that date, it will be **updated** instead (one entry per day rule).\n\n**Field constraints:**\n- `mood`: 1–5\n- `stress`: 1–10\n- `sleep`: 0–24\n- `date`: optional, defaults to today"
+          },
+          "response": [
+            {
+              "name": "200 OK — Created/Updated",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"entry\": {\n    \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d2\",\n    \"userId\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n    \"date\": \"2026-03-10T12:00:00.000Z\",\n    \"mood\": 4,\n    \"stress\": 3,\n    \"sleep\": 7.5,\n    \"emotions\": [\"calm\", \"focused\"],\n    \"notes\": \"Had a productive morning.\",\n    \"triggers\": [\"work deadline\"],\n    \"createdAt\": \"2026-03-10T14:00:00.000Z\",\n    \"updatedAt\": \"2026-03-10T14:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "400 — Missing required fields",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Mood, stress, and sleep are required\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "description": "Aggregated wellness statistics over a time period.",
+      "item": [
+        {
+          "name": "Get Analytics Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics?period=30d",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "30d",
+                  "description": "Time window: 7d | 30d | 90d | 1y (default: 30d)"
+                }
+              ]
+            },
+            "description": "Returns averaged mood, sleep, and stress statistics plus all raw entries for the period."
+          },
+          "response": [
+            {
+              "name": "200 OK — 7d period",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"summary\": {\n    \"entriesLogged\": 7,\n    \"moodAverage\": 3.86,\n    \"sleepAverage\": 7.14,\n    \"stressAverage\": 4.57\n  },\n  \"period\": \"7d\",\n  \"dateRange\": {\n    \"start\": \"2026-03-03T00:00:00.000Z\",\n    \"end\": \"2026-03-10T23:59:59.999Z\"\n  },\n  \"entries\": []\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Goals",
+      "description": "Manage wellness, habit, and custom goals.",
+      "item": [
+        {
+          "name": "List Goals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/goals",
+              "host": ["{{baseUrl}}"],
+              "path": ["goals"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "active",
+                  "description": "Filter by status: active | completed | archived",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "List all goals for the authenticated user. Optionally filter by `status`."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"goals\": [\n    {\n      \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d3\",\n      \"userId\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n      \"title\": \"Sleep 8 hours daily\",\n      \"description\": \"Improve sleep quality\",\n      \"type\": \"habit\",\n      \"targetValue\": 30,\n      \"currentValue\": 12,\n      \"unitOfMeasure\": \"days\",\n      \"status\": \"active\",\n      \"startDate\": \"2026-02-01T00:00:00.000Z\",\n      \"targetDate\": \"2026-03-31T00:00:00.000Z\",\n      \"frequency\": \"daily\",\n      \"createdAt\": \"2026-02-01T10:00:00.000Z\",\n      \"updatedAt\": \"2026-03-10T09:00:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Meditate regularly\",\n  \"description\": \"Build a daily meditation habit\",\n  \"type\": \"habit\",\n  \"targetValue\": 30,\n  \"unitOfMeasure\": \"days\",\n  \"targetDate\": \"2026-04-30\",\n  \"frequency\": \"daily\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/goals",
+              "host": ["{{baseUrl}}"],
+              "path": ["goals"]
+            },
+            "description": "Create a new goal.\n\n**type**: `wellness` | `habit` | `custom`  \n**frequency**: `daily` | `weekly` | `monthly` (optional)"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"goal\": {\n    \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d3\",\n    \"userId\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n    \"title\": \"Meditate regularly\",\n    \"description\": \"Build a daily meditation habit\",\n    \"type\": \"habit\",\n    \"targetValue\": 30,\n    \"currentValue\": 0,\n    \"unitOfMeasure\": \"days\",\n    \"status\": \"active\",\n    \"startDate\": \"2026-03-10T00:00:00.000Z\",\n    \"targetDate\": \"2026-04-30T00:00:00.000Z\",\n    \"frequency\": \"daily\",\n    \"createdAt\": \"2026-03-10T14:00:00.000Z\",\n    \"updatedAt\": \"2026-03-10T14:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "400 — Missing required fields",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Title and target value are required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Goal Progress",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentValue\": 15\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/goals/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["goals", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "64f1a2b3c4d5e6f7a8b9c0d3",
+                  "description": "Goal MongoDB _id"
+                }
+              ]
+            },
+            "description": "Update a goal's `currentValue` and/or `status`. If `currentValue >= targetValue`, the goal is auto-completed.\n\n**status options**: `active` | `completed` | `archived`"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"goal\": {\n    \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d3\",\n    \"currentValue\": 15,\n    \"status\": \"active\"\n  }\n}"
+            },
+            {
+              "name": "404 — Goal not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Goal not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Goal",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/goals/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["goals", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "64f1a2b3c4d5e6f7a8b9c0d3",
+                  "description": "Goal MongoDB _id"
+                }
+              ]
+            },
+            "description": "Permanently delete a goal and all associated habit tracking records."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true\n}"
+            },
+            {
+              "name": "404 — Goal not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Goal not found\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Habits",
+      "description": "Track daily habit completion linked to goals.",
+      "item": [
+        {
+          "name": "List Habits",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/habits",
+              "host": ["{{baseUrl}}"],
+              "path": ["habits"],
+              "query": [
+                {
+                  "key": "goalId",
+                  "value": "64f1a2b3c4d5e6f7a8b9c0d3",
+                  "description": "Filter by linked goal _id",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Retrieve habit tracking records for the authenticated user. Filter by `goalId` to get the habit for a specific goal."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"habits\": [\n    {\n      \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d4\",\n      \"userId\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n      \"goalId\": \"64f1a2b3c4d5e6f7a8b9c0d3\",\n      \"completedDates\": [\n        \"2026-03-09T00:00:00.000Z\",\n        \"2026-03-10T00:00:00.000Z\"\n      ],\n      \"streak\": 2,\n      \"longestStreak\": 7,\n      \"createdAt\": \"2026-02-01T10:00:00.000Z\",\n      \"updatedAt\": \"2026-03-10T09:00:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Toggle Habit (Today)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goalId\": \"64f1a2b3c4d5e6f7a8b9c0d3\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/habits",
+              "host": ["{{baseUrl}}"],
+              "path": ["habits"]
+            },
+            "description": "Toggle today's habit completion for a goal.\n- If today is **not** marked — it gets marked complete. `completedToday: true`.\n- If today **is already** marked — it gets un-marked. `completedToday: false`.\n\nAutomatically recalculates streak and updates goal progress."
+          },
+          "response": [
+            {
+              "name": "200 OK — Marked complete",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"habit\": {\n    \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d4\",\n    \"streak\": 3,\n    \"longestStreak\": 7,\n    \"completedDates\": [\n      \"2026-03-08T00:00:00.000Z\",\n      \"2026-03-09T00:00:00.000Z\",\n      \"2026-03-10T00:00:00.000Z\"\n    ]\n  },\n  \"completedToday\": true\n}"
+            },
+            {
+              "name": "400 — Missing goalId",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"goalId is required\"\n}"
+            },
+            {
+              "name": "404 — Goal not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"Goal not found\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Chat Assistant",
+      "description": "Conversational AI wellness assistant powered by Groq (Llama 3.3 70B).",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"I've been feeling stressed lately — any tips?\",\n  \"history\": [\n    { \"role\": \"user\", \"content\": \"Hi!\" },\n    { \"role\": \"assistant\", \"content\": \"Hello! How are you feeling today?\" }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat"]
+            },
+            "description": "Send a message to the AI wellness assistant.\n\nThe assistant has access to the user's recent wellness analytics (mood average, sleep average, stress trend, streak).\n\n- `history`: optional array of prior turns (up to 10 are used for context)\n- Responses are capped at 512 tokens\n\n**Note:** Requires `GROQ_API_KEY` to be configured server-side."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"message\": \"I understand stress can feel overwhelming. Based on your recent data, your stress levels have been slightly above average. Here are a few things that might help:\\n- Try a 5-minute breathing exercise before bed\\n- A short walk during lunch can reset your mood\\n- Journaling your triggers helps identify patterns\"\n}"
+            },
+            {
+              "name": "503 — GROQ_API_KEY not configured",
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"error\": \"GROQ_API_KEY is not configured. Please add it to your .env.local file.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "description": "View, update, or delete the authenticated user's account.",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["settings"]
+            },
+            "description": "Retrieve the full user profile (password hash is excluded)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"user\": {\n    \"_id\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n    \"email\": \"jane@example.com\",\n    \"profile\": {\n      \"name\": \"Jane Doe\",\n      \"avatar\": \"\"\n    },\n    \"preferences\": {\n      \"purposes\": [\"stress\"],\n      \"stressBaseline\": 5,\n      \"sleepHours\": 8,\n      \"goals\": [],\n      \"notifications\": true\n    },\n    \"dashboardConfig\": {\n      \"showMoodChart\": true,\n      \"showSleepChart\": true,\n      \"showStressChart\": true\n    },\n    \"onboardingCompleted\": true,\n    \"createdAt\": \"2026-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2026-03-10T00:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Smith\",\n  \"purposes\": [\"stress\", \"sleep\"],\n  \"notifications\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["settings"]
+            },
+            "description": "Update profile and/or preferences. All fields are optional.\n\n- `name`: new display name\n- `purposes`: updated list of usage purposes\n- `notifications`: boolean\n- `password`: new password (will be hashed before storing)"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"user\": { }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["settings"]
+            },
+            "description": "⚠️ **Irreversible.** Permanently deletes the user account, all journal entries, and all analytics data. Clears the session."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Export",
+      "description": "Download all journal data as a JSON file.",
+      "item": [
+        {
+          "name": "Export Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["export"]
+            },
+            "description": "Download all journal entries as a JSON file attachment.\n\nResponse headers:\n- `Content-Type: application/json`\n- `Content-Disposition: attachment; filename=\"mental-health-data-YYYY-MM-DD.json\"`"
+          },
+          "response": [
+            {
+              "name": "200 OK — File download",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Content-Disposition", "value": "attachment; filename=\"mental-health-data-2026-03-10.json\"" }
+              ],
+              "body": "{\n  \"exportDate\": \"2026-03-10T14:00:00.000Z\",\n  \"userId\": \"64f1a2b3c4d5e6f7a8b9c0d1\",\n  \"entries\": [\n    {\n      \"date\": \"2026-03-10T12:00:00.000Z\",\n      \"mood\": 4,\n      \"stress\": 3,\n      \"sleep\": 7.5,\n      \"emotions\": [\"calm\"],\n      \"notes\": \"Good day.\",\n      \"triggers\": []\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
