@@ -1,0 +1,19 @@
+
+> mental-health-dashboard@1.0.0 lint
+> next lint
+
+
+./src/app/dashboard/exercises/page.tsx
+35:9  Warning: The 'pattern' object makes the dependencies of useEffect Hook (at line 76) change on every render. To fix this, wrap the initialization of 'pattern' in its own useMemo() Hook.  react-hooks/exhaustive-deps
+327:109  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/dashboard/goals/page.tsx
+126:6  Warning: React Hook useEffect has a missing dependency: 'fetchGoals'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/dashboard/journal/page.tsx
+25:6  Warning: React Hook useEffect has a missing dependency: 'fetchEntries'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/dashboard/settings/page.tsx
+61:6  Warning: React Hook useEffect has a missing dependency: 'fetchProfile'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

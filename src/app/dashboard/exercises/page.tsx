@@ -13,6 +13,8 @@ import { Wind, Play, Pause, RotateCcw, CheckCircle2, HeartPulse, Brain, Waves, P
 
 type BreathingState = "idle" | "inhale" | "hold1" | "exhale" | "hold2";
 
+const pattern = { inhale: 4, hold1: 7, exhale: 8, hold2: 0 };
+
 export default function ExercisesPage() {
   // Breathing Tool State
   const [isActive, setIsActive] = useState(false);
@@ -30,9 +32,6 @@ export default function ExercisesPage() {
   });
   const [step, setStep] = useState(1);
   const [savedRecords, setSavedRecords] = useState<{ date: string, situation: string, reframe: string }[]>([]);
-
-  // 4-7-8 Timing
-  const pattern = { inhale: 4, hold1: 7, exhale: 8, hold2: 0 };
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -73,7 +72,7 @@ export default function ExercisesPage() {
     }
 
     return () => clearInterval(interval);
-  }, [isActive, phase, pattern]);
+  }, [isActive, phase]);
 
   const toggleBreathing = () => {
     if (!isActive) {
@@ -324,7 +323,7 @@ export default function ExercisesPage() {
                         className="bg-background border-primary focus-visible:ring-primary"
                       />
                       <p className="text-xs text-muted-foreground mt-1">
-                        Try looking for evidence that contradicts the negative thought, or consider what you'd say to a friend in this situation.
+                        Try looking for evidence that contradicts the negative thought, or consider what you&apos;d say to a friend in this situation.
                       </p>
                     </div>
                     <Button

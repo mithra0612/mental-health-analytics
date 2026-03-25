@@ -1,0 +1,9 @@
+
+> mental-health-dashboard@1.0.0 lint
+> next lint
+
+
+./src/app/dashboard/exercises/page.tsx
+75:6  Warning: React Hook useEffect has an unnecessary dependency: 'pattern'. Either exclude it or remove the dependency array. Outer scope values like 'pattern' aren't valid dependencies because mutating them doesn't re-render the component.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
