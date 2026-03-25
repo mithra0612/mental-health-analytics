@@ -87,6 +87,45 @@ export function generateWeeklyInsights(entries: IEntry[]): InsightResult[] {
     });
   }
 
+  // Sleep & Mood Correlation
+  const daysWithGoodSleep = entries.filter(e => e.sleep >= 7);
+  const daysWithBadSleep = entries.filter(e => e.sleep < 7);
+  
+  if (daysWithGoodSleep.length > 2 && daysWithBadSleep.length > 2) {
+    const moodGoodSleep = daysWithGoodSleep.reduce((sum, e) => sum + e.mood, 0) / daysWithGoodSleep.length;
+    const moodBadSleep = daysWithBadSleep.reduce((sum, e) => sum + e.mood, 0) / daysWithBadSleep.length;
+    
+    if (moodGoodSleep > moodBadSleep + 0.5) {
+      insights.push({
+        type: "correlation",
+        title: "Sleep Boosts Mood",
+        description: `Your mood is ${(moodGoodSleep - moodBadSleep).toFixed(1)} points higher when you sleep 7+ hours`,
+        relevance: "high",
+      });
+    }
+  }
+
+  // Effect of most common trigger on stress
+  if (triggers.length > 0) {
+    const topTrigger = triggers[0].trigger;
+    const entriesWithTrigger = entries.filter(e => e.triggers.includes(topTrigger));
+    const entriesWithoutTrigger = entries.filter(e => !e.triggers.includes(topTrigger));
+    
+    if (entriesWithTrigger.length >= 2 && entriesWithoutTrigger.length >= 2) {
+      const stressWith = entriesWithTrigger.reduce((sum, e) => sum + e.stress, 0) / entriesWithTrigger.length;
+      const stressWithout = entriesWithoutTrigger.reduce((sum, e) => sum + e.stress, 0) / entriesWithoutTrigger.length;
+
+      if (stressWith > stressWithout + 0.5) {
+        insights.push({
+          type: "correlation",
+          title: `Trigger Impact: ${topTrigger}`,
+          description: `Stress is ${(stressWith - stressWithout).toFixed(1)} points higher when "${topTrigger}" occurs`,
+          relevance: "high",
+        });
+      }
+    }
+  }
+
   return insights;
 }
 

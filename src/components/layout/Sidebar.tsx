@@ -7,9 +7,10 @@ import {
   LayoutDashboard,
   BookOpen,
   LineChart,
-  Lightbulb,
+  Flower2,
   Bot,
   Target,
+  FileBarChart,
   SlidersHorizontal,
   Menu,
   X,
@@ -27,10 +28,10 @@ const navItems: NavItem[] = [
   { label: "Overview",      href: "/dashboard/overview",   icon: LayoutDashboard },
   { label: "Journal",       href: "/dashboard/journal",    icon: BookOpen        },
   { label: "Analytics",     href: "/dashboard/analytics",  icon: LineChart       },
-  { label: "Insights",      href: "/dashboard/insights",   icon: Lightbulb       },
+  { label: "Exercises",     href: "/dashboard/exercises",  icon: Flower2         },
   { label: "AI Assistant",  href: "/dashboard/assistant",  icon: Bot             },
   { label: "Goals",         href: "/dashboard/goals",      icon: Target          },
-  // { label: "Reports",       href: "/dashboard/reports",    icon: FileBarChart    },
+  { label: "Reports",       href: "/dashboard/reports",    icon: FileBarChart    },
 ];
 
 export function Sidebar() {
