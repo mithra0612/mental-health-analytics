@@ -290,8 +290,8 @@ export default function GoalsPage() {
           const updatedDates = data.completedToday
             ? [...(g.habitData?.completedDates ?? []), todayStr]
             : (g.habitData?.completedDates ?? []).filter(
-                (d) => d !== todayStr
-              );
+              (d) => d !== todayStr
+            );
           return {
             ...g,
             currentValue: data.habit.completedDates.length,
@@ -366,12 +366,12 @@ export default function GoalsPage() {
   const avgProgress =
     activeGoals.length > 0
       ? Math.round(
-          activeGoals.reduce(
-            (sum, g) =>
-              sum + Math.min((g.currentValue / g.targetValue) * 100, 100),
-            0
-          ) / activeGoals.length
-        )
+        activeGoals.reduce(
+          (sum, g) =>
+            sum + Math.min((g.currentValue / g.targetValue) * 100, 100),
+          0
+        ) / activeGoals.length
+      )
       : 0;
   const completionRate =
     goals.length > 0 ? Math.round((completedGoals.length / goals.length) * 100) : 0;
@@ -475,11 +475,10 @@ export default function GoalsPage() {
                       >
                         <button
                           onClick={() => handleToggleHabit(g._id!)}
-                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                            g.habitData?.completedToday
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${g.habitData?.completedToday
                               ? "bg-violet-500 border-violet-500 text-white"
                               : "border-muted-foreground/40 hover:border-violet-400"
-                          }`}
+                            }`}
                         >
                           {g.habitData?.completedToday && (
                             <Check className="h-3 w-3" />
@@ -638,11 +637,10 @@ export default function GoalsPage() {
                       key={tpl.label}
                       disabled={isSubmitting || alreadyExists}
                       onClick={() => handleQuickAddTemplate(tpl)}
-                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-colors ${
-                        alreadyExists
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-colors ${alreadyExists
                           ? "border-muted bg-muted/30 text-muted-foreground cursor-default"
                           : "border-border hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400"
-                      }`}
+                        }`}
                     >
                       <Icon className="h-5 w-5" />
                       <span className="text-xs">{tpl.label}</span>
@@ -823,15 +821,14 @@ export default function GoalsPage() {
                                 />
                               ))}
                               <div
-                                className={`h-full rounded-full transition-all duration-500 ${
-                                  pct >= 100
+                                className={`h-full rounded-full transition-all duration-500 ${pct >= 100
                                     ? "bg-green-500"
                                     : pct >= 60
                                       ? "bg-blue-500"
                                       : pct >= 30
                                         ? "bg-blue-400"
                                         : "bg-blue-300"
-                                }`}
+                                  }`}
                                 style={{ width: `${pct}%` }}
                               />
                             </div>
@@ -875,11 +872,10 @@ export default function GoalsPage() {
                                       className="flex flex-col items-center gap-1"
                                     >
                                       <div
-                                        className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors ${
-                                          done
+                                        className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-colors ${done
                                             ? "bg-violet-500 text-white"
                                             : "bg-muted text-muted-foreground"
-                                        }`}
+                                          }`}
                                       >
                                         {done ? (
                                           <Check className="h-4 w-4" />

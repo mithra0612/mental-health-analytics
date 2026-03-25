@@ -297,7 +297,7 @@ export default function SettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {["5","6","7","8","9","10"].map((h) => (
+                      {["5", "6", "7", "8", "9", "10"].map((h) => (
                         <SelectItem key={h} value={h}>{h} hours</SelectItem>
                       ))}
                     </SelectContent>
@@ -314,7 +314,7 @@ export default function SettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {["1","2","3","4","5","6","7","8","9","10"].map((n) => (
+                      {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((n) => (
                         <SelectItem key={n} value={n}>{n} — {Number(n) <= 3 ? "Low" : Number(n) <= 6 ? "Moderate" : "High"}</SelectItem>
                       ))}
                     </SelectContent>

@@ -1,5 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
+
+function isTokenValid(token: string) {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return false;
+    
+    let base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) {
+      base64 += "=";
+    }
+    
+    const payload = JSON.parse(atob(base64));
+    if (payload.exp && payload.exp * 1000 < Date.now()) return false;
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 export function middleware(request: NextRequest) {
   const cookieToken = request.cookies.get("auth-token")?.value;
@@ -9,7 +26,7 @@ export function middleware(request: NextRequest) {
   const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   const token = cookieToken || bearerToken;
-  const isValidToken = token ? verifyToken(token) !== null : false;
+  const isValidToken = token ? isTokenValid(token) : false;
 
   const { pathname } = request.nextUrl;
 

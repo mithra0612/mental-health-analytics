@@ -29,7 +29,7 @@ export default function ExercisesPage() {
     reframe: ""
   });
   const [step, setStep] = useState(1);
-  const [savedRecords, setSavedRecords] = useState<{date: string, situation: string, reframe: string}[]>([]);
+  const [savedRecords, setSavedRecords] = useState<{ date: string, situation: string, reframe: string }[]>([]);
 
   // 4-7-8 Timing
   const pattern = { inhale: 4, hold1: 7, exhale: 8, hold2: 0 };
@@ -120,7 +120,7 @@ export default function ExercisesPage() {
         title="Wellness Exercises"
         description="Interactive tools to manage stress and stay grounded"
       />
-      
+
       <div className="p-6 md:max-w-4xl mx-auto space-y-6">
         <Tabs defaultValue="breathing" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 max-w-lg">
@@ -145,14 +145,12 @@ export default function ExercisesPage() {
               <CardContent className="flex flex-col items-center justify-center space-y-8 pb-10">
                 <div className="relative flex items-center justify-center h-48 w-48">
                   {/* Outer circle animation */}
-                  <div className={`absolute inset-0 rounded-full border-4 transition-all duration-1000 ease-in-out ${
-                    isActive ? "border-primary opacity-30" : "border-muted"
-                  } ${phase === "inhale" ? "scale-110" : phase === "exhale" ? "scale-90" : "scale-100"}`} />
-                  
+                  <div className={`absolute inset-0 rounded-full border-4 transition-all duration-1000 ease-in-out ${isActive ? "border-primary opacity-30" : "border-muted"
+                    } ${phase === "inhale" ? "scale-110" : phase === "exhale" ? "scale-90" : "scale-100"}`} />
+
                   {/* Inner dynamic circle */}
-                  <div className={`absolute flex items-center justify-center rounded-full bg-primary/10 transition-all duration-1000 ease-in-out ${
-                    phase === "inhale" ? "h-44 w-44" : phase === "exhale" ? "h-32 w-32" : isActive ? "h-40 w-40" : "h-32 w-32"
-                  }`}>
+                  <div className={`absolute flex items-center justify-center rounded-full bg-primary/10 transition-all duration-1000 ease-in-out ${phase === "inhale" ? "h-44 w-44" : phase === "exhale" ? "h-32 w-32" : isActive ? "h-40 w-40" : "h-32 w-32"
+                    }`}>
                     <div className="flex flex-col items-center">
                       <span className="text-sm font-medium text-primary uppercase tracking-wider mb-1">
                         {getInstruction()}
@@ -174,9 +172,9 @@ export default function ExercisesPage() {
                 </div>
               </CardContent>
               <CardFooter className="justify-center gap-4 py-6 bg-muted/30 border-t">
-                <Button 
-                  size="lg" 
-                  onClick={toggleBreathing} 
+                <Button
+                  size="lg"
+                  onClick={toggleBreathing}
                   className={isActive ? "bg-amber-500 hover:bg-amber-600" : ""}
                 >
                   {isActive ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
@@ -256,31 +254,31 @@ export default function ExercisesPage() {
                 <CardDescription>Challenge and change negative thought patterns into more balanced ones.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                
+
                 {step === 1 && (
                   <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <div className="space-y-2">
                       <Label htmlFor="situation">1. What is the situation?</Label>
-                      <Textarea 
+                      <Textarea
                         id="situation"
                         placeholder="e.g., I made a mistake on a presentation at work."
                         value={thoughtRecord.situation}
-                        onChange={(e) => setThoughtRecord({...thoughtRecord, situation: e.target.value})}
+                        onChange={(e) => setThoughtRecord({ ...thoughtRecord, situation: e.target.value })}
                         className="bg-background"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="emotion">What emotion are you feeling?</Label>
-                      <Input 
+                      <Input
                         id="emotion"
                         placeholder="e.g., Anxious, Embarrassed (7/10)"
                         value={thoughtRecord.emotion}
-                        onChange={(e) => setThoughtRecord({...thoughtRecord, emotion: e.target.value})}
+                        onChange={(e) => setThoughtRecord({ ...thoughtRecord, emotion: e.target.value })}
                         className="bg-background"
                       />
                     </div>
-                    <Button 
-                      className="w-full mt-4" 
+                    <Button
+                      className="w-full mt-4"
                       onClick={() => setStep(2)}
                       disabled={!thoughtRecord.situation || !thoughtRecord.emotion}
                     >
@@ -293,16 +291,16 @@ export default function ExercisesPage() {
                   <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <div className="space-y-2">
                       <Label htmlFor="thought">2. What is the negative thought?</Label>
-                      <Textarea 
+                      <Textarea
                         id="thought"
                         placeholder="e.g., I am completely incompetent and everyone thinks I am a failure."
                         value={thoughtRecord.thought}
-                        onChange={(e) => setThoughtRecord({...thoughtRecord, thought: e.target.value})}
+                        onChange={(e) => setThoughtRecord({ ...thoughtRecord, thought: e.target.value })}
                         className="bg-background"
                       />
                     </div>
-                    <Button 
-                      className="w-full mt-4" 
+                    <Button
+                      className="w-full mt-4"
                       onClick={() => setStep(3)}
                       disabled={!thoughtRecord.thought}
                     >
@@ -318,19 +316,19 @@ export default function ExercisesPage() {
                   <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <div className="space-y-2">
                       <Label htmlFor="reframe">3. What is a more balanced thought?</Label>
-                      <Textarea 
+                      <Textarea
                         id="reframe"
                         placeholder="e.g., Everyone makes mistakes. One error doesn't define my entire competence. I will learn from this."
                         value={thoughtRecord.reframe}
-                        onChange={(e) => setThoughtRecord({...thoughtRecord, reframe: e.target.value})}
+                        onChange={(e) => setThoughtRecord({ ...thoughtRecord, reframe: e.target.value })}
                         className="bg-background border-primary focus-visible:ring-primary"
                       />
                       <p className="text-xs text-muted-foreground mt-1">
                         Try looking for evidence that contradicts the negative thought, or consider what you'd say to a friend in this situation.
                       </p>
                     </div>
-                    <Button 
-                      className="w-full mt-4" 
+                    <Button
+                      className="w-full mt-4"
                       onClick={saveThoughtRecord}
                       disabled={!thoughtRecord.reframe}
                     >
