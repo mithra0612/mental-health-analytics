@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
-import { verifyPassword, setSession } from "@/lib/auth";
+import { verifyPassword, setSession, generateToken } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,21 +33,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await setSession({
+    const authUser = {
       id: user._id!.toString(),
       email: user.email,
       name: user.profile.name,
       onboardingCompleted: user.onboardingCompleted,
-    });
+    };
+
+    await setSession(authUser);
+    const token = generateToken(authUser);
 
     return NextResponse.json({
       success: true,
-      user: {
-        id: user._id!.toString(),
-        email: user.email,
-        name: user.profile.name,
-        onboardingCompleted: user.onboardingCompleted,
-      },
+      token,
+      user: authUser,
     });
   } catch (error) {
     return NextResponse.json(
