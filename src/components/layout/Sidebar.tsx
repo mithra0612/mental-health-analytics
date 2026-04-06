@@ -31,7 +31,7 @@ const navItems: NavItem[] = [
   { label: "Exercises",     href: "/dashboard/exercises",  icon: Flower2         },
   { label: "AI Assistant",  href: "/dashboard/assistant",  icon: Bot             },
   { label: "Goals",         href: "/dashboard/goals",      icon: Target          },
-  { label: "Reports",       href: "/dashboard/reports",    icon: FileBarChart    },
+  // { label: "Reports",       href: "/dashboard/reports",    icon: FileBarChart    },
 ];
 
 export function Sidebar() {
